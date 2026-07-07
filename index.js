@@ -1,10 +1,23 @@
 require("dotenv").config();
 
+const express = require("express");
 const {
     Client,
     GatewayIntentBits,
     PermissionsBitField
 } = require("discord.js");
+
+const app = express();
+
+const PORT = process.env.PORT || 3000;
+
+app.get("/health", (req, res) => {
+    res.status(200).send("OK");
+});
+
+app.listen(PORT, () => {
+    console.log(`Health server running on port ${PORT}`);
+});
 
 const client = new Client({
     intents: [
@@ -25,10 +38,8 @@ client.on("messageCreate", async (message) => {
 
     const member = message.member;
 
-    // Allow owner
     if (message.guild.ownerId === member.id) return;
 
-    // Allow admins
     if (member.permissions.has(PermissionsBitField.Flags.Administrator)) return;
 
     try {
